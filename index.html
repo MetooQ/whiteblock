@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+
+	 #main{
+	 	height: 400px;
+	 	width: 400px;
+	 	border: 2px solid green;
+	 	margin: 0 auto;
+	 	position: relative;
+	 	overflow: hidden;
+	 }
+
+	 #container{
+	 	width: 100%;
+	 	height: 400px;
+	 	background-color: white;
+	 	position: relative;
+	 	top: -100px;
+	 }
+
+	 .row{
+	 	height: 100px;
+	 	width:100%;
+	 }
+
+	 .cell{
+	 	height: 100px;
+	 	width: 100px;
+	 	float: left;
+	 }
+
+	 .black{
+	 	background-color: black;
+	 }
+
+	 #score{
+	 	text-align: center;
+	 }
+	</style>
+</head>
+<body>
+    <h1 id="score">0</h1>
+	<div id="main">
+		<div id="container"></div>
+	</div>
+</body>
+<script>
+
+	var clock = null;//定时器操作句柄
+	var state = 0;  //0是初始化 1为进行中 2为暂停 3为失败
+	var speed = 4;
+
+	function init(){
+		for(var i = 0; i<4; i++){
+			crow();
+		}
+
+		$('main').onclick = function(ev){
+			if(state == 3){
+				alert("失败者禁止入内~");
+				return;
+			}
+			if(ev.target.className.indexOf('black') == -1){
+				fail();
+			}else{
+				ev.target.className = 'cell';
+				ev.target.parentNode.pass = 1; //成功点击
+				score();
+				
+			}
+
+		}
+	}
+
+	function cdiv(className){
+		var div = document.createElement("div");
+		div.className = className;
+		return div;
+	}
+
+	function crow(){
+		var con = $('container');
+		var row = cdiv("row");
+		var classes = createSn();
+		for(var i = 0; i<4; i++){
+			var cell = cdiv(classes[i]);
+			row.appendChild(cell);
+
+		}
+		if(con.firstChild == null){
+			con.appendChild(row);
+		}else{
+			con.insertBefore(row, con.firstChild);
+		}
+	}
+
+	/*获取ID
+	*/
+	function $(id){
+		return document.getElementById(id);
+	}
+
+	/*
+	返回一个数组，随机其中一个有black
+	*/
+	function createSn(){
+		var arr = ['cell', 'cell', 'cell', 'cell'];
+		var i = Math.floor(Math.random()*4);
+		arr[i] = 'cell black';
+
+		return arr;
+	}
+
+	/*让白块动起来*/
+	function move(){
+		var con = $("container");
+		var top = parseInt(window.getComputedStyle(con, null)['top']);
+		if(speed + top > 0){ //一步走过头
+			top = 0;
+		}else{
+			top += speed;  //调节速度 2,4,5,10,20
+			
+		}
+		con.style.top = top + 'px';
+
+		if(top == 0){
+			crow();
+			con.style.top = '-100px';
+			drow();
+		}else if(top == (-100 + speed)){
+			var rows = con.children;
+			if(rows.length == 5 && con.lastChild.pass !== 1){
+				fail();
+			}
+		}
+	}
+
+	/*定时器*/
+	function start(){
+		clock = window.setInterval('move()', 30);
+	}
+
+	/*删除最后一行*/
+	function drow(){
+		var con = $('container');
+		if(con.childNodes.length == 6){
+			con.removeChild(con.lastChild);
+		}
+	}
+
+	/*计分*/
+	function score(){
+		
+		var newScore = parseInt($("score").innerHTML) + 1;
+		$("score").innerHTML = newScore;
+		if(newScore % 10 == 0){
+			jiasu();
+		}
+	}
+
+	/*输*/
+	function fail(){
+		clearInterval(clock);
+		state = 3;
+		alert("失败");
+	}
+
+	/*加速函数*/
+	function jiasu(){
+		speed += 2;
+		if(speed == 20){
+			alert("太厉害了");
+		}
+	}
+
+	init();
+	start();
+</script>
+</html>
+
+
+
+
+
+
+
