@@ -7,8 +7,8 @@
 	<style>
 
 	 #main{
-	 	height: 400px;
-	 	width: 400px;
+	 	height: 360px;
+	 	width: 360px;
 	 	border: 2px solid green;
 	 	margin: 0 auto;
 	 	position: relative;
@@ -17,20 +17,20 @@
 
 	 #container{
 	 	width: 100%;
-	 	height: 300px;
+	 	height: 360px;
 	 	background-color: white;
 	 	position: relative;
-	 	top: -100px;
+	 	top: -90px;
 	 }
 
 	 .row{
-	 	height: 100px;
+	 	height: 90px;
 	 	width:100%;
 	 }
 
 	 .cell{
-	 	height: 100px;
-	 	width: 100px;
+	 	height: 90px;
+	 	width: 90px;
 	 	float: left;
 	 }
 
@@ -65,7 +65,7 @@
 
 		$('#main').tap(function(e){
 			if(state == 3){
-				alert("失败者禁止入内~");
+				alert("请刷新页面重新开始~");
 				return;
 			}
 			if($(e.target).hasClass("black")){
@@ -86,7 +86,8 @@
 	}
 
 	function crow(){
-		var con = $('#container');
+		var con = $("#container");
+		// var con = document.getElementById("container");
 		var row = cdiv("row");
 		var classes = createSn();
 		for(var i = 0; i<4; i++){
@@ -94,10 +95,16 @@
 			row.appendChild(cell);
 
 		}
+
+		// if(con.firstChild == null){
+		// 	con.appendChild(row);
+		// }else{
+		// 	con.insertBefore(row, con.firstChild);
+		// }
 		if(con.children().eq(1).length == 0){
 			con.append(row);
 		}else{
-			con.children().eq(1).before(row);//这句有点问题
+			con.prepend(row);//这句有点问题
 		}
 	}
 	/*
@@ -125,9 +132,9 @@
 
 		if(top == 0){
 			crow();
-			con.css("top",'-100px');
+			con.css("top",'-90px');
 			drow();
-		}else if(top == (-100 + speed)){
+		}else if(top == (-90 + speed)){
 			var rows = con.children();
 			var currentPass = $("#container .row:last-child").hasClass("pass");
 			if(rows.length == 5 && !currentPass){
