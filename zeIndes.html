@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
 	<title>Document</title>
 	<style>
 
@@ -17,7 +16,7 @@
 
 	 #container{
 	 	width: 100%;
-	 	height: 300px;
+	 	height: 400px;
 	 	background-color: white;
 	 	position: relative;
 	 	top: -100px;
@@ -49,9 +48,8 @@
 		<div id="container"></div>
 	</div>
 </body>
-<!-- <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script> -->
-<script type="text/javascript" src="zepto.js"></script>
-<script type="text/javascript" src="touch.js"></script>
+
+<script type="text/javascript" src="http://zeptojs.com/zepto.min.js"></script>
 <script>
 
 	var clock = null;//定时器操作句柄
@@ -62,21 +60,21 @@
 		for(var i = 0; i<4; i++){
 			crow();
 		}
-
-		$('#main').tap(function(e){
+		$("$main").tap(function(e){
 			if(state == 3){
-				alert("失败者禁止入内~");
+				alert("请刷新后重新开始~");
 				return;
 			}
-			if($(e.target).hasClass("black")){
-				$(e.target).removeClass("black");
-				$(e.target).parent().addClass("pass");
+			if(e.target.hasClass("black")){
+				e.target.removeClass("black");
+				e.target.parent().attr("pass",1);
 				score();
 			}else{
 				fail();
 			}
 
 		})
+
 	}
 
 	function cdiv(className){
@@ -91,15 +89,17 @@
 		var classes = createSn();
 		for(var i = 0; i<4; i++){
 			var cell = cdiv(classes[i]);
-			row.appendChild(cell);
+			row.append(cell);
 
 		}
-		if(con.children().eq(1).length == 0){
+		if(con.children().eq(1) == null){
 			con.append(row);
 		}else{
-			con.children().eq(1).before(row);//这句有点问题
+			$(con.children().eq(1)).insertBefore(row);
 		}
 	}
+
+
 	/*
 	返回一个数组，随机其中一个有black
 	*/
@@ -128,9 +128,8 @@
 			con.css("top",'-100px');
 			drow();
 		}else if(top == (-100 + speed)){
-			var rows = con.children();
-			var currentPass = $("#container .row:last-child").hasClass("pass");
-			if(rows.length == 5 && !currentPass){
+			var rows = con.children;
+			if(rows.length == 5 && con.lastChild.attr("pass") !== 1){
 				fail();
 			}
 		}
@@ -145,15 +144,15 @@
 	function drow(){
 		var con = $('#container');
 		if(con.children().length == 6){
-			$("#container .row:last-child").remove();
+			con.removeChild(con.lastChild);
 		}
 	}
 
 	/*计分*/
 	function score(){
 		
-		var newScore = parseInt($("#score").text()) + 1;
-		$("#score").text(newScore);
+		var newScore = parseInt($("score").innerHTML) + 1;
+		$("score").innerHTML = newScore;
 		if(newScore % 10 == 0){
 			jiasu();
 		}
